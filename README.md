@@ -131,7 +131,7 @@ az vm list-ip-addresses --resource-group my-vm-group --output table
 ##### Ping Windows VM from Linux VM
 To test connectivity:
 ```bash
-ping <Windows_VM_IP>  # e.g., ping 10.0.1.5
+ping <Windows_VM_IP>  
 ```
 
 ## If You Don't Receive Any Response
