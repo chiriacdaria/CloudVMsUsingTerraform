@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VM Manager</title>
+</head>
+
+<body>
+    <h1>Create Virtual Machines</h1>
+    <label for="os-type">Choose OS:</label>
+    <select id="os-type">
+        <option value="Linux">Linux</option>
+        <option value="Windows">Windows</option>
+    </select>
+    <button id="create-vm-button">Create VM</button>
+
+    <h2>Existing Virtual Machines</h2>
+    <button id="list-vms-button">Refresh VM List</button>
+    <ul id="vm-list"></ul>
+
+    <script>
+        document.getElementById('create-vm-button').addEventListener('click', function () {
+            const osType = document.getElementById('os-type').value;
+            console.log("VM: ", osType)
+            fetch('/create-vm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ vm_os_type: osType })
+            })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+
+        document.getElementById('list-vms-button').addEventListener('click', function () {
+            fetch('/list-vms')
+                .then(response => response.json())
+                .then(vmList => {
+                    const vmListElement = document.getElementById('vm-list');
+                    vmListElement.innerHTML = ''; // Clear the existing list
+
+                    vmList.forEach(vm => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `VM Name: ${vm.name}, OS: ${vm.storageProfile.osDisk.osType}, Status: ${vm.provisioningState}`;
+                        vmListElement.appendChild(listItem);
+                    });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
